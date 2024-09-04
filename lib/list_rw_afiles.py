@@ -3,7 +3,7 @@ import os
 
 glob_path   = '/Volumes/migrants_state/pdfs/*.pdf'
 pdf_paths   = glob.glob(glob_path)
-result_path = 'data/rw_afiles.txt'
+result_path = 'data/source_lists/rw_afiles.txt'
 afile_nos   = []
 
 for path in pdf_paths:

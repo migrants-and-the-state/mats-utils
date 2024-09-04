@@ -1,15 +1,15 @@
 import collections
 
-with open('data/rw_afiles.txt') as f:
+with open('data/source_lists/rw_afiles.txt') as f:
   rw_afiles = [afile.strip() for afile in f]
 
-with open('data/gdrive_afiles.txt') as f:
+with open('data/source_lists/gdrive_afiles.txt') as f:
   gdrive_afiles = [afile.strip() for afile in f]
 
-with open('data/gh_json_afiles.txt') as f:
+with open('data/source_lists/gh_json_afiles.txt') as f:
   gh_json_afiles = [afile.strip() for afile in f]
 
-with open('data/gh_ocr_afiles.txt') as f:
+with open('data/source_lists/gh_ocr_afiles.txt') as f:
   gh_ocr_afiles = [afile.strip() for afile in f]
 
 rw_dupes      = [item for item, count in collections.Counter(rw_afiles).items() if count > 1]
@@ -40,14 +40,14 @@ rw_missing_gd_vs_gh_missing_gd = list(set(in_gd_not_rw) - set(in_gd_not_gh_json)
 # in_gh_json_not_gh_ocr = list(set(gh_json_afiles) - set(gh_ocr_afiles))
 # in_gh_ocr_not_gh_json = list(set(gh_ocr_afiles) - set(gh_json_afiles))
 
-with open('data/in_rw_not_gd.txt', 'w+') as file:
+with open('data/comps/in_rw_not_gd.txt', 'w+') as file:
   file.write("\n".join(in_rw_not_gd))
 
-with open('data/in_gd_not_rw.txt', 'w+') as file:
+with open('data/comps/in_gd_not_rw.txt', 'w+') as file:
   file.write("\n".join(in_gd_not_rw))
 
-with open('data/in_gh_not_rw.txt', 'w+') as file:
+with open('data/comps/in_gh_not_rw.txt', 'w+') as file:
   file.write("\n".join(in_gh_json_not_rw))
 
-with open('data/in_gd_not_gh.txt', 'w+') as file:
+with open('data/comps/in_gd_not_gh.txt', 'w+') as file:
   file.write("\n".join(in_gd_not_gh_json))

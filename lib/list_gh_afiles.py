@@ -7,8 +7,8 @@ ocr_glob_path     = 'extracted-data/data/text_ocr/*.txt'
 json_paths        = glob.glob(json_glob_path)
 ocr_paths         = glob.glob(ocr_glob_path)
 
-json_result_path  = 'data/gh_json_afiles.txt'
-ocr_result_path   = 'data/gh_ocr_afiles.txt'
+json_result_path  = 'data/source_lists/gh_json_afiles.txt'
+ocr_result_path   = 'data/source_lists/gh_ocr_afiles.txt'
 
 json_afile_nos  = []
 ocr_afile_nos   = []
