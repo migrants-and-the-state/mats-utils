@@ -22,16 +22,3 @@ with open('data/in_rw_not_gd.txt', 'w+') as file:
 
 with open('data/in_gd_not_rw.txt', 'w+') as file:
   file.write("\n".join(in_gd_not_rw))
-
-# File.open('data/in_rw_not_gd.txt', 'w+') do |f|
-#   f.puts in_rw_not_gd
-# end
-
-# File.open('data/in-gd-not-rw.txt', 'w+') do |f|
-#   f.puts in_gd_not_rw
-# end
-
-
-
-
-
