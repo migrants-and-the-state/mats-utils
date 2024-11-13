@@ -7,23 +7,35 @@ from tqdm import tqdm
 LOOKUP_FILE       = 'data/catalog/anum_lookup.csv'
 FULL_CATALOG_FILE = 'data/catalog/SF_and_KC_OR_YYYY.csv'
 RESULTS_FILE      = 'data/catalog/matched_subset_results.csv'
-
-def extract_value(hash_list, key):
-  return [h[key] for h in hash_list if key in h]
+NOT_FOUND_LOOKUP  = 'data/catalog/unmatched_nara.csv'
 
 print('Getting started...')
 
 # read the lookup file
 with open(LOOKUP_FILE, 'r') as file:
-  ms_lookup = list(csv.DictReader(file))
+  ms_lookup = {}
+  reader = csv.reader(file)
+  next(reader, None) # skip header row
+  for row in reader:
+    if not row[1].endswith('USCIS'): # ignore USCIS files, match only NARA
+      ms_lookup[row[0]] = row[1]
+          
+print(f"Looking for {len(ms_lookup)} NARA A-Files...")
 
-# get a flat, sorted list of anums from the lookup file
-ms_anums = extract_value(ms_lookup, 'anumber')
+# get a flat, unique, & sorted list of anums from the lookup file
+ms_anums = list(set(ms_lookup.keys()))
 ms_anums.sort() 
 
-# remove the previous results file if it exists
+matched_anums = []
+
+# remove the previous results files if exist
 try:
   os.remove(RESULTS_FILE)
+except OSError:
+  pass
+
+try:
+  os.remove(NOT_FOUND_LOOKUP)
 except OSError:
   pass
 
@@ -37,6 +49,11 @@ with open(FULL_CATALOG_FILE, 'r') as file:
     file.write(','.join(dictList[0].keys()))
     file.write('\n')
 
+  # create not matched table and add the first header line
+  with open(NOT_FOUND_LOOKUP, 'a') as file:
+    file.write('anumber,og_id')
+    file.write('\n')
+
   # iterate through full catalog
   for dict in tqdm(dictList):
     tokens = re.split(r'^(0+|A+)', dict['ANUMBER'])
@@ -44,7 +61,13 @@ with open(FULL_CATALOG_FILE, 'r') as file:
 
     # if a match is found, append it to the subset results file
     if normalized_anum in ms_anums:
+      matched_anums.append(normalized_anum)
       with open(RESULTS_FILE, 'a') as file:
         dict['ANUMBER'] = normalized_anum
         file.write(','.join(dict.values()))
         file.write('\n')
+
+with open(NOT_FOUND_LOOKUP, 'a') as file:
+  for anum in [item for item in ms_anums if item not in matched_anums]:
+    file.write(f"{anum},{ms_lookup[anum]}")
+    file.write('\n')
