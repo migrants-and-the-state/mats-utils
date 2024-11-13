@@ -1,5 +1,6 @@
 import csv
 import os
+import re
 
 from tqdm import tqdm
 
@@ -14,11 +15,11 @@ print('Getting started...')
 
 # read the lookup file
 with open(LOOKUP_FILE, 'r') as file:
-  lookup = list(csv.DictReader(file))
+  ms_lookup = list(csv.DictReader(file))
 
 # get a flat, sorted list of anums from the lookup file
-anums = extract_value(lookup, 'anumber')
-anums.sort() 
+ms_anums = extract_value(ms_lookup, 'anumber')
+ms_anums.sort() 
 
 # remove the previous results file if it exists
 try:
@@ -38,13 +39,12 @@ with open(FULL_CATALOG_FILE, 'r') as file:
 
   # iterate through full catalog
   for dict in tqdm(dictList):
+    tokens = re.split(r'^(0+|A+)', dict['ANUMBER'])
+    normalized_anum = f"A{tokens[-1]}"
+
     # if a match is found, append it to the subset results file
-    if dict['ANUMBER'] in anums:
+    if normalized_anum in ms_anums:
       with open(RESULTS_FILE, 'a') as file:
-        file.write(','.join(dict.values()))
-        file.write('\n')
-    elif f"A{dict['ANUMBER']}" in anums: 
-      dict['ANUMBER'] = f"A{dict['ANUMBER']}"
-      with open(RESULTS_FILE, 'a') as file:
+        dict['ANUMBER'] = normalized_anum
         file.write(','.join(dict.values()))
         file.write('\n')
